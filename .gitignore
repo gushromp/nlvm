@@ -1,5 +1,6 @@
 nlvm/nlvm
 nlvm/nlvmr
+nlvm/*.dSYM
 nimcache
 *.s
 /nlvm/nlvm.self

@@ -2645,7 +2645,11 @@ proc callErrno(g: LLGen, prefix: string): llvm.ValueRef =
 
   let
     errnoType = llvm.functionType(g.cintType.pointerType(), [])
-    f = g.m.getOrInsertFunction("__" & prefix & "errno_location", errnoType)
+  
+  when defined macosx:
+    let f = g.m.getOrInsertFunction("__" & prefix & "error", errnoType)
+  else:
+    let f = g.m.getOrInsertFunction("__" & prefix & "errno_location", errnoType)
 
   g.b.buildCall(f, [], g.nn(prefix & "errno"))
 
@@ -7356,6 +7360,7 @@ proc genMain(g: LLGen) =
     g.finalize()
 
 proc loadBase(g: LLGen) =
+  echo platform.CPU[g.config.target.targetCPU].name, " ", platform.OS[g.config.target.targetOS].name
   let
     base = g.config.prefixDir.string /
       "../nlvm-lib/nlvmbase-$1-$2.ll" %
@@ -7457,7 +7462,7 @@ proc genForwardedProcs(g: LLGen) =
 
 proc myClose(graph: ModuleGraph, b: PPassContext, n: PNode): PNode =
   if graph.config.skipCodegen(n): return n
-
+  
   let pc = LLModule(b)
   let g = pc.g
   p("Close", n, 0)

@@ -39,7 +39,7 @@ LLD_ROOT=lld-$VER2.src
 [ -d $LLVM_ROOT/projects/lld ] || {
   rm -rf $LLVM_ROOT/projects/lld
   cd $LLVM_ROOT/projects
-  ln -sfr ../../$LLD_ROOT lld
+  ln -sf ../../$LLD_ROOT lld
   cd ../..
 }
 
@@ -49,7 +49,7 @@ LLD_ROOT=lld-$VER2.src
 
 [ -f libunwind-$VER2/CMakeLists.txt ] || {
   tar xf libunwind-$VER2.src.tar.xz
-  cp -ar libunwind-$VER2.src/include/mach-o $LLD_ROOT/include
+  cp -a libunwind-$VER2.src/include/mach-o $LLD_ROOT/include
 }
 
 cd $LLVM_ROOT
@@ -58,6 +58,6 @@ mkdir -p $TGT
 cd $TGT
 
 shift 4
-cmake -GNinja -DLLVM_USE_LINKER=gold LLVM_INCLUDE_BENCHMARKS=OFF "$@" ..
+cmake -GNinja -DLLVM_INCLUDE_BENCHMARKS=OFF "$@" ..
 
 ninja
